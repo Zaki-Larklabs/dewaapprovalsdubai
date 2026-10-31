@@ -6,7 +6,7 @@ Independent Dubai consultancy for DEWA electricity and water approvals, NOCs, co
 
 ## Status
 
-**Gate A — foundation and page designs.** No production build is approved yet. The previous static site is archived under `_legacy/` and must not be deployed. See `docs/todo.md` for the gated plan.
+**Gate A — foundation and page designs complete, awaiting owner sign-off.** No production build is approved yet. The previous static site is archived under `_legacy/` and must not be deployed. Start with `docs/README.md` and record decisions in `docs/GATE_A_SIGNOFF.md`.
 
 ## What is in this repository
 

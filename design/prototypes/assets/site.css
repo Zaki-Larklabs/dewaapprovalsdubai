@@ -1000,6 +1000,9 @@ th,
 .trust-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
   border-bottom: var(--rule);
 }
 

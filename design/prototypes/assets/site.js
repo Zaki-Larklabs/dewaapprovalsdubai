@@ -168,7 +168,20 @@
       if (empty) empty.style.display = count === 0 ? "block" : "none";
     };
 
-    if (search) search.addEventListener("input", applyFilter);
+    if (search) {
+      search.addEventListener("input", () => {
+        if (activeCategory !== "all") {
+          activeCategory = "all";
+          categoryButtons.forEach((button) => {
+            button.setAttribute(
+              "aria-current",
+              button.getAttribute("data-category-filter") === "all" ? "true" : "false"
+            );
+          });
+        }
+        applyFilter();
+      });
+    }
     categoryButtons.forEach((button) => {
       button.addEventListener("click", () => {
         activeCategory = button.getAttribute("data-category-filter") || "all";

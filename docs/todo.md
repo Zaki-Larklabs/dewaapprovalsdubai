@@ -65,7 +65,7 @@ Status: Gate A in progress. Do not start Gate B production implementation until 
 - [x] Define form, upload, spam and retention rules.
 - [x] Define SEO, i18n, accessibility, performance, security and CI rules.
 - [ ] Scaffold the Next.js app after Gate A approval.
-- [ ] Add the CI workflow after the app exists.
+- [x] Add a guarded CI skeleton; app jobs activate when `package.json` and the lockfile exist.
 - [ ] Add the CMS models and publish guard.
 - [ ] Add form, upload, Turnstile and email integration.
 - [ ] Add analytics consent and error monitoring.

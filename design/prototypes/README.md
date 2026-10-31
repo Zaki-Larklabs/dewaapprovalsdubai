@@ -13,7 +13,8 @@ These coded prototypes test the design system, not the final content. Open `inde
 - Registration, licence, address, email and phone: marked `[verify]` in the prototype.
 - Timing ranges: withheld until the owner supplies anonymised job data.
 - FAQ answers: draft copy for design review; every published answer needs an official source, a named reviewer and a review date.
-- Arabic mirror: the language switch is present; the `/ar/` mirror is not built in this prototype.
+- Arabic mirror: the language switch is present; the `/ar/` mirror is not built in this prototype. The `#ar` anchors are placeholders, not published routes.
+- Legal links: `#privacy`, `#terms`, `#cookies` and `#sitemap` are placeholders. The legal pages are planned in `docs/SITEMAP.md` and require legal review.
 
 ## Run
 
