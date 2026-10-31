@@ -1,0 +1,22 @@
+{
+  "name": "dewa-approvals-dubai",
+  "version": "1.0.0",
+  "description": "DEWA Approvals Dubai - Official Lead Portal & Prototypes of Abbadi Tech",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve:prototypes": "npx serve design/prototypes",
+    "serve:legacy": "npx serve _legacy"
+  },
+  "keywords": [
+    "dewa",
+    "approvals",
+    "dubai",
+    "electrical",
+    "noc",
+    "sld"
+  ],
+  "author": "Abbadi Tech Technical Solutions LLC",
+  "license": "ISC"
+}
