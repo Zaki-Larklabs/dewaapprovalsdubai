@@ -27,4 +27,4 @@ Open `http://localhost:3000/design/prototypes/`.
 
 ## Screenshots
 
-The `screenshots/` folder is generated locally with Chrome headless for owner review. It is not a substitute for testing on a device.
+The `screenshots/` folder contains desktop and mobile review captures generated with Chrome headless. They are design review artefacts, not a substitute for testing on a physical device.
