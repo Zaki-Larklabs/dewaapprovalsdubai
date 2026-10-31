@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  app-quality:
+    name: App quality
+    if: ${{ hashFiles('package.json') != '' && hashFiles('package-lock.json') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run typecheck --if-present
+      - run: npm run test --if-present
+      - run: npm run build --if-present
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docs:
+    name: Gate A documents
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            docs/REFERENCE_TRACE.md
+            docs/PRD.md
+            docs/DESIGN.md
+            docs/TECH_RULES.md
+            docs/SITEMAP.md
+            docs/keyword-map.csv
+            docs/content-briefs.md
+            docs/claims-to-verify.md
+            docs/todo.md
+            docs/GATE_A_SIGNOFF.md
+          )
+          for file in "${required[@]}"; do
+            test -s "$file" || { echo "Missing or empty: $file"; exit 1; }
+          done
+          echo "Gate A documents present."

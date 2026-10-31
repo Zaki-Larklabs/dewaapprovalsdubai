@@ -1,2 +1,35 @@
-.vercel
-.env*
+# Environment and deployment secrets
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Dependencies and build output
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Local research and scratch files
+.research/
+.tmp/
+*.log
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Local databases and uploads
+*.sqlite
+*.sqlite3
+/uploads/*
+!/uploads/.gitkeep
