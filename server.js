@@ -27,7 +27,7 @@ const MIME_TYPES = {
 const server = http.createServer((req, res) => {
   let reqPath = decodeURI(req.url.split('?')[0]);
 
-  // Root redirect: default to new design prototypes if root index doesn't exist
+  // Root redirect: default to new design prototypes
   if (reqPath === '/' || reqPath === '') {
     if (fs.existsSync(path.join(ROOT, 'index.html'))) {
       reqPath = '/index.html';
@@ -45,12 +45,35 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Enforce trailing slash on directory paths
+  if (reqPath === '/design/prototypes') {
+    res.writeHead(302, { Location: '/design/prototypes/' });
+    res.end();
+    return;
+  }
+
+  // Asset alias fallbacks
+  if (reqPath.startsWith('/design/assets/')) {
+    const sub = reqPath.replace('/design/assets/', '');
+    reqPath = '/design/prototypes/assets/' + sub;
+  } else if (reqPath.startsWith('/assets/')) {
+    const sub = reqPath.replace('/assets/', '');
+    reqPath = '/design/prototypes/assets/' + sub;
+  }
+
   // If path ends with slash, look for index.html inside
   if (reqPath.endsWith('/')) {
     reqPath += 'index.html';
   }
 
   let filePath = path.join(ROOT, reqPath);
+
+  // If directory requested without trailing slash, redirect to trailing slash
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    res.writeHead(302, { Location: reqPath + '/' });
+    res.end();
+    return;
+  }
 
   // If file doesn't exist directly, check with .html extension
   if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {

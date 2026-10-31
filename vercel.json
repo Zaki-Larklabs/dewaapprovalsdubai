@@ -4,6 +4,7 @@
   "buildCommand": "echo 'Static site ready'",
   "outputDirectory": ".",
   "cleanUrls": true,
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/",
@@ -14,6 +15,16 @@
       "source": "/legacy",
       "destination": "/_legacy/index.html",
       "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/design/assets/:path*",
+      "destination": "/design/prototypes/assets/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "destination": "/design/prototypes/assets/:path*"
     }
   ],
   "headers": [
