@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dewaapprovals.abbaditech.ae/sitemap.xml
