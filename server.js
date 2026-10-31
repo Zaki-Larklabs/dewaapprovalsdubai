@@ -52,6 +52,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Redirect directory roots without index to anchor sections
+  if (reqPath === '/design/prototypes/project-types' || reqPath === '/design/prototypes/project-types/') {
+    res.writeHead(302, { Location: '/design/prototypes/#projects' });
+    res.end();
+    return;
+  }
+  if (reqPath === '/design/prototypes/services' || reqPath === '/design/prototypes/services/') {
+    res.writeHead(302, { Location: '/design/prototypes/#services' });
+    res.end();
+    return;
+  }
+
   // Asset alias fallbacks
   if (reqPath.startsWith('/design/assets/')) {
     const sub = reqPath.replace('/design/assets/', '');

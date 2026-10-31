@@ -15,6 +15,26 @@
       "source": "/legacy",
       "destination": "/_legacy/index.html",
       "permanent": false
+    },
+    {
+      "source": "/design/prototypes/project-types",
+      "destination": "/design/prototypes/#projects",
+      "permanent": false
+    },
+    {
+      "source": "/design/prototypes/project-types/",
+      "destination": "/design/prototypes/#projects",
+      "permanent": false
+    },
+    {
+      "source": "/design/prototypes/services",
+      "destination": "/design/prototypes/#services",
+      "permanent": false
+    },
+    {
+      "source": "/design/prototypes/services/",
+      "destination": "/design/prototypes/#services",
+      "permanent": false
     }
   ],
   "rewrites": [
