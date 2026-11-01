@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DEWA Approvals Dubai | Independent Consultancy | Abbadi Tech</title>
   <meta name="description" content="Independent Dubai consultancy for DEWA fit-out approvals, NOCs, load upgrades, connections and Shams Dubai. Source-linked guidance, reviewed by engineers.">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://dewaapprovals.abbaditech.ae/">
   <meta property="og:locale" content="en_AE">
   <meta property="og:type" content="website">
@@ -14,6 +15,7 @@
   <meta name="theme-color" content="#101820">
   <link rel="icon" href="/design/prototypes/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/design/prototypes/assets/site.css">
+  <link rel="stylesheet" href="/design/prototypes/assets/motion/motion.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -86,7 +88,7 @@
         </a>
       </div>
       <div class="tb-cell"><span class="tb-label">Project</span><span class="tb-value">DEWA approvals</span></div>
-      <div class="tb-cell"><span class="tb-label">Sheet</span><span class="tb-value">A-101</span></div>
+      <div class="tb-cell"><span class="tb-label">Sheet</span><span class="tb-value" data-sheet-value>A-101</span></div>
       <div class="tb-cell"><span class="tb-label">Revision</span><span class="tb-value">C / Gate A</span></div>
       <div class="tb-cell"><span class="tb-label">Date</span><span class="tb-value">31.10.26</span></div>
     </div>
@@ -571,8 +573,29 @@
           <p>The cable run is the project file. Each stage produces a document the next stage can use, so the authority response is never a surprise.</p>
           <div class="section-head__meta">SHT 05/09<br>Workflow W-601</div>
         </div>
+      </div>
 
-        <ol class="process">
+      <div class="process-pin">
+        <div class="shell process-shell">
+          <div class="process-visual" data-process-visual aria-hidden="true">
+            <div class="process-visual__head">
+              <span>Cable run / W-601</span>
+              <span data-process-counter>Stage 01 / 06</span>
+            </div>
+            <svg class="process-fallback" viewBox="0 0 900 320" preserveAspectRatio="none" aria-hidden="true">
+              <path class="process-fallback__rule" d="M40 160h820"/>
+              <path class="process-fallback__cable" pathLength="1" d="M40 160h820"/>
+              <g class="process-fallback__nodes">
+                <path d="M40 152l8 8-8 8-8-8z"/><path d="M196 152l8 8-8 8-8-8z"/><path d="M352 152l8 8-8 8-8-8z"/><path d="M508 152l8 8-8 8-8-8z"/><path d="M664 152l8 8-8 8-8-8z"/><path d="M820 152l8 8-8 8-8-8z"/>
+              </g>
+            </svg>
+            <div class="process-visual__foot">
+              <span>DWG W-601 / illustrative</span>
+              <button class="process-skip" type="button" data-process-skip>Skip animation</button>
+            </div>
+          </div>
+
+          <ol class="process">
           <li class="step">
             <span class="step-no">Stage 01</span>
             <h3>Scope + document audit</h3>
@@ -609,7 +632,8 @@
             <p>The meter release, as-built record and close-out documents are handed over.</p>
             <dl><dt>Owner</dt><dd>DEWA + contractor</dd><dt>Output</dt><dd>Close-out</dd></dl>
           </li>
-        </ol>
+          </ol>
+        </div>
       </div>
     </section>
 
@@ -894,7 +918,7 @@
 
     <div class="shell footer-titleblock">
       <div><span>Project</span><strong>DEWA approvals / Dubai</strong></div>
-      <div><span>Sheet</span><strong>A-101</strong></div>
+      <div><span>Sheet</span><strong data-sheet-value>A-101</strong></div>
       <div><span>Revision</span><strong>C / Gate A</strong></div>
       <div><span>Date</span><strong>31.10.26</strong></div>
       <div><span>Status</span><strong>Design proof</strong></div>
@@ -907,6 +931,157 @@
   </footer>
 
   <div class="sheet-indicator" data-sheet-indicator aria-hidden="true">SHT <span>01</span> / 09</div>
+
+  <div class="motion-stage" data-motion-stage aria-hidden="true"><canvas data-motion-canvas></canvas></div>
+  <div class="motion-labels" id="motion-labels" data-motion-labels aria-hidden="true"></div>
+  <button class="motion-toggle" type="button" data-motion-toggle aria-pressed="false">Motion: Full</button>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const params = new URLSearchParams(window.location.search);
+      const forced = params.get("motion");
+      const systemReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const saveData = Boolean(navigator.connection && navigator.connection.saveData);
+      let stored = "full";
+      try { stored = window.localStorage.getItem("dewa-motion") || "full"; } catch (error) {}
+      const hardReduced = systemReduce || saveData;
+      const reduced = hardReduced || stored === "reduced" || forced === "off";
+      const toggle = document.querySelector("[data-motion-toggle]");
+      const boot = { tier: "t0", reason: "initial", meanFrameMs: null, forced, reduced };
+      window.__MOTION_BOOT__ = boot;
+
+      const setToggle = () => {
+        if (!toggle) return;
+        const isReduced = reduced;
+        toggle.textContent = isReduced ? "Motion: Reduced" : "Motion: Full";
+        toggle.setAttribute("aria-pressed", String(isReduced));
+        if (hardReduced) {
+          toggle.setAttribute("aria-disabled", "true");
+          toggle.title = "Reduced motion is set by the browser or data saver.";
+        } else {
+          toggle.removeAttribute("aria-disabled");
+          toggle.title = isReduced ? "Turn on the scroll motion layer" : "Turn off the scroll motion layer";
+        }
+      };
+
+      const applyTier = (tier, reason) => {
+        boot.tier = tier;
+        boot.reason = reason;
+        root.dataset.motionTier = tier;
+        root.classList.toggle("motion-css", tier === "t2" || tier === "t3");
+        root.classList.toggle("motion-full", false);
+        root.classList.toggle("motion-off", tier === "t0" || tier === "t1");
+        if (window.console && window.console.info) {
+          window.console.info(`[motion] ${tier} / ${reason}`, boot.meanFrameMs ? `${boot.meanFrameMs.toFixed(1)}ms mean` : "");
+        }
+      };
+
+      const hasWebGL2 = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const gl = canvas.getContext("webgl2");
+          if (!gl) return false;
+          const lose = gl.getExtension("WEBGL_lose_context");
+          if (lose) lose.loseContext();
+          return true;
+        } catch (error) {
+          return false;
+        }
+      };
+
+      const loadBundle = () => {
+        if (window.__motionBundleRequested) return;
+        window.__motionBundleRequested = true;
+        const script = document.createElement("script");
+        script.type = "module";
+        script.src = "/design/prototypes/assets/motion/motion.js";
+        script.onerror = () => {
+          root.classList.remove("motion-full");
+          root.classList.add("motion-css");
+          boot.tier = "t2";
+          boot.reason = "bundle-error";
+        };
+        document.head.appendChild(script);
+      };
+
+      const probe = (done) => {
+        let start = 0;
+        let last = 0;
+        let frames = 0;
+        let total = 0;
+        const tick = (now) => {
+          if (!start) { start = now; last = now; }
+          frames += 1;
+          total += now - last;
+          last = now;
+          if (now - start < 500) {
+            window.requestAnimationFrame(tick);
+            return;
+          }
+          done(frames ? total / frames : 99);
+        };
+        window.requestAnimationFrame(tick);
+      };
+
+      const start = () => {
+        if (reduced) {
+          applyTier("t0", systemReduce ? "prefers-reduced-motion" : saveData ? "save-data" : forced === "off" ? "flag-off" : "stored-reduced");
+          setToggle();
+          return;
+        }
+        if (forced === "t1") {
+          applyTier("t1", "flag-t1");
+          setToggle();
+          return;
+        }
+        const narrow = window.matchMedia("(max-width: 1023px)").matches || window.matchMedia("(pointer: coarse)").matches;
+        const weak = (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) || (navigator.deviceMemory && navigator.deviceMemory < 4);
+        if (forced === "css" || narrow || weak) {
+          applyTier("t2", forced === "css" ? "flag-css" : narrow ? "narrow-or-coarse" : "low-hardware");
+          setToggle();
+          loadBundle();
+          return;
+        }
+        if (!hasWebGL2()) {
+          applyTier("t2", "no-webgl2");
+          setToggle();
+          loadBundle();
+          return;
+        }
+        if (forced === "full") {
+          applyTier("t3", "flag-full");
+          setToggle();
+          loadBundle();
+          return;
+        }
+        probe((mean) => {
+          boot.meanFrameMs = mean;
+          const ok = mean < 18;
+          applyTier(ok ? "t3" : "t2", ok ? "probe-pass" : "probe-slow");
+          setToggle();
+          loadBundle();
+        });
+      };
+
+      setToggle();
+      if (toggle && !hardReduced) {
+        toggle.addEventListener("click", () => {
+          try {
+            window.localStorage.setItem("dewa-motion", reduced ? "full" : "reduced");
+          } catch (error) {}
+          window.location.reload();
+        });
+      }
+
+      const afterLoad = () => {
+        const idle = window.requestIdleCallback || ((fn) => window.setTimeout(fn, 250));
+        idle(start, { timeout: 1200 });
+      };
+      if (document.readyState === "complete") afterLoad();
+      else window.addEventListener("load", afterLoad, { once: true });
+    })();
+  </script>
   <script src="/design/prototypes/assets/site.js" defer></script>
 </body>
 </html>

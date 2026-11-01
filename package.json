@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "echo 'Static build ready'",
+    "build": "npm run build:motion && echo 'Static build ready'",
+    "build:motion": "node scripts/build-motion.mjs",
     "vercel-build": "echo 'Static build ready'",
     "serve:prototypes": "npx serve design/prototypes",
     "serve:legacy": "npx serve _legacy"
@@ -20,5 +21,11 @@
     "sld"
   ],
   "author": "Abbadi Tech Technical Solutions LLC",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "gsap": "^3.13.0",
+    "ogl": "^1.0.11",
+    "puppeteer-core": "^25.16.0"
+  }
 }

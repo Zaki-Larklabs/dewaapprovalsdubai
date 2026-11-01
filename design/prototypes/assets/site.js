@@ -44,10 +44,13 @@
           const el = entry.target;
           el.classList.add("is-in");
           if (el.classList.contains("process")) {
-            el.classList.add("is-energised");
-            el.querySelectorAll(".step").forEach((step, index) => {
-              window.setTimeout(() => step.classList.add("is-live"), 160 + index * 120);
-            });
+            const motionTier = window.__MOTION_BOOT__ && window.__MOTION_BOOT__.tier;
+            if (motionTier !== "t2" && motionTier !== "t3") {
+              el.classList.add("is-energised");
+              el.querySelectorAll(".step").forEach((step, index) => {
+                window.setTimeout(() => step.classList.add("is-live"), 160 + index * 120);
+              });
+            }
           }
           if (el.classList.contains("stamp")) {
             el.classList.add("is-pressed");
@@ -61,16 +64,34 @@
   }
 
   const sheetIndicator = document.querySelector("[data-sheet-indicator]");
+  const sheetValues = [...document.querySelectorAll("[data-sheet-value]")];
+  const sheetCodes = {
+    "01": "A-101",
+    "02": "R-201",
+    "03": "A-201",
+    "04": "P-301",
+    "05": "W-601",
+    "06": "C-601",
+    "07": "L-701",
+    "08": "Q-801",
+    "09": "E-901"
+  };
+  const setSheet = (value) => {
+    if (!value) return;
+    if (sheetIndicator) sheetIndicator.innerHTML = `SHT <span>${value}</span> / 09`;
+    sheetValues.forEach((item) => {
+      item.textContent = sheetCodes[value] || value;
+    });
+  };
   const sheets = [...document.querySelectorAll("[data-sheet]")];
-  if (sheetIndicator && sheets.length && "IntersectionObserver" in window) {
+  if (sheets.length && "IntersectionObserver" in window) {
     const sheetObserver = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible) return;
-        const value = visible.target.getAttribute("data-sheet");
-        sheetIndicator.innerHTML = `SHT <span>${value}</span> / 09`;
+        setSheet(visible.target.getAttribute("data-sheet"));
       },
       { rootMargin: "-25% 0px -55% 0px", threshold: [0.05, 0.25, 0.5] }
     );

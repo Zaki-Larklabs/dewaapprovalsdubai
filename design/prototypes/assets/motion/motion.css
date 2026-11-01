@@ -1,0 +1,362 @@
+/* ---------- Motion layer ---------- */
+
+html {
+  --motion-xs: 160ms;
+  --motion-s: 240ms;
+  --motion-m: 400ms;
+  --motion-l: 700ms;
+  --motion-xl: 1200ms;
+  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --motion-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+main {
+  position: relative;
+  z-index: 2;
+}
+
+.motion-stage,
+.motion-labels {
+  display: none;
+}
+
+.motion-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.motion-stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.motion-labels {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+html.motion-full .motion-stage,
+html.motion-full .motion-labels {
+  display: block;
+}
+
+.motion-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 4px;
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity var(--motion-m) var(--motion-ease);
+}
+
+.motion-label.is-visible {
+  opacity: 1;
+}
+
+.motion-label--dim {
+  color: var(--ink-70);
+}
+
+.motion-label--copper {
+  border-color: var(--copper);
+  color: var(--copper-text);
+}
+
+.motion-label--approved {
+  border-color: var(--approved);
+  color: var(--approved);
+}
+
+/* Hero: the static SVG is the poster and the T0–T2 fallback. T3 replaces its
+   linework with the stage while keeping the panel frame, top line and caption. */
+
+html.motion-full .drawing-panel {
+  background: transparent;
+}
+
+html.motion-full .drawing-panel .sld {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--motion-l) var(--motion-ease);
+}
+
+html.motion-css .hero-grid {
+  perspective: 1200px;
+}
+
+html.motion-css .drawing-panel {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Process stage. T3 pins the drawn cable run with CSS sticky; there is no
+   ScrollTrigger pin and no scroll hijack. */
+
+.process-visual {
+  display: none;
+}
+
+html.motion-css .process-visual,
+html.motion-full .process-visual {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: clamp(180px, 26vh, 280px);
+  border: 1px solid var(--hairline-strong);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  overflow: hidden;
+}
+
+html.motion-full .process-visual {
+  background: transparent;
+}
+
+.process-visual__head,
+.process-visual__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px;
+  color: var(--ink-70);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.process-visual__head {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.process-visual__foot {
+  border-top: 1px solid var(--hairline);
+}
+
+.process-visual__head [data-process-counter] {
+  color: var(--copper-text);
+}
+
+.process-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.motion-full .process-fallback {
+  display: none;
+}
+
+.process-fallback__rule {
+  stroke: var(--hairline-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.process-fallback__cable {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.process-fallback__nodes path {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.process-fallback__nodes path.is-live {
+  fill: var(--copper);
+  stroke: var(--copper);
+}
+
+.process-fallback__nodes path.is-done {
+  fill: var(--approved);
+  stroke: var(--approved);
+}
+
+.process-skip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+html.motion-full .process-skip {
+  display: inline-flex;
+}
+
+.process-skip:hover,
+.process-skip:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+html.motion-full #process {
+  min-height: 460vh;
+  padding-bottom: 0;
+}
+
+html.motion-full #process .process-pin {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+html.motion-full #process .process-shell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 2vh, 22px);
+  padding-top: calc(64px + 3vh);
+  padding-bottom: 3vh;
+}
+
+html.motion-full #process .process {
+  flex: 0 0 auto;
+}
+
+html.motion-full #process .step {
+  transition: opacity var(--motion-m) var(--motion-ease);
+}
+
+html.motion-full #process .step:not(.is-live) {
+  opacity: 0.62;
+}
+
+html.motion-full #process .step.is-live {
+  opacity: 1;
+}
+
+html.motion-full #process .step:not(.is-live)::before {
+  background: var(--paper);
+  border-color: var(--ink);
+}
+
+html.motion-full #process .step.is-live::before {
+  background: var(--copper);
+  border-color: var(--copper);
+}
+
+/* Visible pause control for the only auto-playing motion. */
+
+.motion-toggle {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 35;
+  padding: 7px 10px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.motion-toggle:hover,
+.motion-toggle:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.motion-toggle[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+html.motion-off .process-visual,
+html.motion-off .motion-stage,
+html.motion-off .motion-labels {
+  display: none !important;
+}
+
+@media (max-width: 860px) {
+  html.motion-full #process {
+    min-height: 0;
+    padding-bottom: var(--space-8);
+  }
+
+  html.motion-full #process .process-pin {
+    position: static;
+    min-height: 0;
+  }
+
+  html.motion-full #process .process-shell {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  html.motion-full #process .process-fallback {
+    display: block;
+  }
+
+  html.motion-full .process-visual {
+    background: var(--paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-stage,
+  .motion-labels {
+    display: none !important;
+  }
+
+  .motion-label {
+    transition: none;
+  }
+
+  .motion-toggle {
+    display: none;
+  }
+}
+
+@media print {
+  .motion-stage,
+  .motion-labels,
+  .motion-toggle,
+  .process-visual {
+    display: none !important;
+  }
+
+  html.motion-full .drawing-panel {
+    background: var(--paper);
+  }
+
+  html.motion-full .drawing-panel .sld {
+    opacity: 1;
+    visibility: visible;
+  }
+}
