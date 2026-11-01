@@ -944,7 +944,12 @@
       const systemReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const saveData = Boolean(navigator.connection && navigator.connection.saveData);
       let stored = "full";
-      try { stored = window.localStorage.getItem("dewa-motion") || "full"; } catch (error) {}
+      try {
+        if (forced === "full") {
+          window.localStorage.setItem("dewa-motion", "full");
+        }
+        stored = window.localStorage.getItem("dewa-motion") || "full";
+      } catch (error) {}
       const hardReduced = systemReduce || saveData;
       const reduced = hardReduced || stored === "reduced" || forced === "off";
       const toggle = document.querySelector("[data-motion-toggle]");
@@ -953,7 +958,7 @@
 
       const setToggle = () => {
         if (!toggle) return;
-        const isReduced = reduced;
+        const isReduced = (boot.tier === "t0" || reduced);
         toggle.textContent = isReduced ? "Motion: Reduced" : "Motion: Full";
         toggle.setAttribute("aria-pressed", String(isReduced));
         if (hardReduced) {
@@ -961,7 +966,7 @@
           toggle.title = "Reduced motion is set by the browser or data saver.";
         } else {
           toggle.removeAttribute("aria-disabled");
-          toggle.title = isReduced ? "Turn on the scroll motion layer" : "Turn off the scroll motion layer";
+          toggle.title = isReduced ? "Turn on 3D motion" : "Turn off 3D motion (switch to reduced)";
         }
       };
 
@@ -973,7 +978,7 @@
         root.classList.toggle("motion-full", false);
         root.classList.toggle("motion-off", tier === "t0" || tier === "t1");
         if (window.console && window.console.info) {
-          window.console.info(`[motion] ${tier} / ${reason}`, boot.meanFrameMs ? `${boot.meanFrameMs.toFixed(1)}ms mean` : "");
+          window.console.info(`[motion] ${tier} / ${reason}`);
         }
       };
 
@@ -1005,25 +1010,6 @@
         document.head.appendChild(script);
       };
 
-      const probe = (done) => {
-        let start = 0;
-        let last = 0;
-        let frames = 0;
-        let total = 0;
-        const tick = (now) => {
-          if (!start) { start = now; last = now; }
-          frames += 1;
-          total += now - last;
-          last = now;
-          if (now - start < 500) {
-            window.requestAnimationFrame(tick);
-            return;
-          }
-          done(frames ? total / frames : 99);
-        };
-        window.requestAnimationFrame(tick);
-      };
-
       const start = () => {
         if (reduced) {
           applyTier("t0", systemReduce ? "prefers-reduced-motion" : saveData ? "save-data" : forced === "off" ? "flag-off" : "stored-reduced");
@@ -1035,10 +1021,16 @@
           setToggle();
           return;
         }
-        const narrow = window.matchMedia("(max-width: 1023px)").matches || window.matchMedia("(pointer: coarse)").matches;
-        const weak = (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) || (navigator.deviceMemory && navigator.deviceMemory < 4);
-        if (forced === "css" || narrow || weak) {
-          applyTier("t2", forced === "css" ? "flag-css" : narrow ? "narrow-or-coarse" : "low-hardware");
+        if (forced === "css") {
+          applyTier("t2", "flag-css");
+          setToggle();
+          loadBundle();
+          return;
+        }
+        // Small mobile screens (<860px) use CSS fallback since hero columns stack
+        const isMobileScreen = window.matchMedia("(max-width: 860px)").matches;
+        if (isMobileScreen) {
+          applyTier("t2", "mobile-screen");
           setToggle();
           loadBundle();
           return;
@@ -1049,37 +1041,29 @@
           loadBundle();
           return;
         }
-        if (forced === "full") {
-          applyTier("t3", "flag-full");
-          setToggle();
-          loadBundle();
-          return;
-        }
-        probe((mean) => {
-          boot.meanFrameMs = mean;
-          const ok = mean < 18;
-          applyTier(ok ? "t3" : "t2", ok ? "probe-pass" : "probe-slow");
-          setToggle();
-          loadBundle();
-        });
+        // WebGL2 is supported and desktop viewport ready - activate Tier 3 directly
+        applyTier("t3", forced === "full" ? "flag-full" : "webgl2-ready");
+        setToggle();
+        loadBundle();
       };
 
       setToggle();
       if (toggle && !hardReduced) {
         toggle.addEventListener("click", () => {
           try {
-            window.localStorage.setItem("dewa-motion", reduced ? "full" : "reduced");
+            const next = (boot.tier === "t0" || reduced) ? "full" : "reduced";
+            window.localStorage.setItem("dewa-motion", next);
           } catch (error) {}
           window.location.reload();
         });
       }
 
-      const afterLoad = () => {
-        const idle = window.requestIdleCallback || ((fn) => window.setTimeout(fn, 250));
-        idle(start, { timeout: 1200 });
-      };
-      if (document.readyState === "complete") afterLoad();
-      else window.addEventListener("load", afterLoad, { once: true });
+      // Start immediately without waiting for heavy external page assets
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      } else {
+        start();
+      }
     })();
   </script>
   <script src="/design/prototypes/assets/site.js" defer></script>
