@@ -1,5 +1,5 @@
-// DEWA Approvals Dubai - Lead Portal JavaScript
-// Official Subordinate Division of Abbadi Tech Technical Solutions LLC
+﻿// DEWA Approvals Dubai - Lead Portal JavaScript
+// DEWA Approvals Dubai
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. STICKY HEADER
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     estPrice.innerHTML = `<span style="font-size: 1.6rem; color: #E8A85C; font-weight: 700;">Custom Quote</span>`;
-    if (estDays) estDays.textContent = `Flexible Pricing • Turnaround: ${days}`;
+    if (estDays) estDays.textContent = `Flexible Pricing â€¢ Turnaround: ${days}`;
     if (estInspection) estInspection.textContent = '100% First-Pass Target';
     if (estDocs) estDocs.textContent = docs;
   }
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const scope = document.getElementById('lead-scope')?.value || '';
       const details = document.getElementById('lead-details')?.value || '';
 
-      const waMsg = `Hello DEWA Approvals Dubai (Abbadi Tech Technical Solutions LLC), I need approval assistance:%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Email:* ${encodeURIComponent(email)}%0A*Property Type:* ${encodeURIComponent(type)}%0A*Required Scope:* ${encodeURIComponent(scope)}%0A*Unit / Details:* ${encodeURIComponent(details)}%0A%0A_Sent via dewaapprovals.abbaditech.ae portal_`;
+      const waMsg = `Hello DEWA Approvals Dubai, I need approval assistance:%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Email:* ${encodeURIComponent(email)}%0A*Property Type:* ${encodeURIComponent(type)}%0A*Required Scope:* ${encodeURIComponent(scope)}%0A*Unit / Details:* ${encodeURIComponent(details)}%0A%0A_Sent via dewaapprovals.abbaditech.ae portal_`;
 
       window.open(`https://wa.me/971505546943?text=${waMsg}`, '_blank');
     });
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const scope = scopeSelect ? scopeSelect.options[scopeSelect.selectedIndex].text : 'DEWA Fit-Out NOC';
       const priceText = estPrice ? estPrice.innerText : '';
 
-      const waMsg = `Hello Abbadi Tech DEWA Desk, I used the online approval calculator:%0A%0A*Scope:* ${encodeURIComponent(scope)}%0A*Property:* ${encodeURIComponent(property)}%0A*Load:* ${loadKW} kW%0A*Estimated Fee:* ${encodeURIComponent(priceText)}%0A%0APlease confirm requirements and process my inquiry.`;
+      const waMsg = `Hello DEWA Approvals Dubai DEWA Desk, I used the online approval calculator:%0A%0A*Scope:* ${encodeURIComponent(scope)}%0A*Property:* ${encodeURIComponent(property)}%0A*Load:* ${loadKW} kW%0A*Estimated Fee:* ${encodeURIComponent(priceText)}%0A%0APlease confirm requirements and process my inquiry.`;
 
       window.open(`https://wa.me/971505546943?text=${waMsg}`, '_blank');
     });
@@ -198,3 +198,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
