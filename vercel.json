@@ -4,6 +4,7 @@
     "app": {
       "root": ".",
       "runtime": "node",
+      "buildCommand": "echo 'App ready'",
       "bindings": [
         {
           "type": "service",
@@ -15,7 +16,8 @@
     },
     "legacy": {
       "root": "_legacy",
-      "runtime": "node"
+      "runtime": "node",
+      "buildCommand": "echo 'Legacy ready'"
     }
   },
   "cleanUrls": true,
