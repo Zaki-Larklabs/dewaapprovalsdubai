@@ -1,19 +1,29 @@
 {
-  "version": 2,
-  "framework": null,
-  "buildCommand": "echo 'Static site ready'",
-  "outputDirectory": ".",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "legacy",
+          "format": "url",
+          "env": "LEGACY_URL"
+        }
+      ]
+    },
+    "legacy": {
+      "root": "_legacy",
+      "runtime": "node"
+    }
+  },
   "cleanUrls": true,
   "trailingSlash": true,
   "redirects": [
     {
       "source": "/",
       "destination": "/design/prototypes/",
-      "permanent": false
-    },
-    {
-      "source": "/legacy",
-      "destination": "/_legacy/index.html",
       "permanent": false
     },
     {
@@ -45,6 +55,12 @@
     {
       "source": "/assets/:path*",
       "destination": "/design/prototypes/assets/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "app"
+      }
     }
   ],
   "headers": [

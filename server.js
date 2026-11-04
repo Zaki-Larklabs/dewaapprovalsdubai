@@ -1,9 +1,44 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const ROOT = path.resolve(__dirname);
+
+function proxyToLegacy(req, res, targetPath) {
+  try {
+    const legacyBase = process.env.LEGACY_URL.endsWith('/')
+      ? process.env.LEGACY_URL
+      : process.env.LEGACY_URL + '/';
+    const cleanPath = targetPath.startsWith('/') ? targetPath.slice(1) : targetPath;
+    const targetUrl = new URL(cleanPath, legacyBase);
+
+    const client = targetUrl.protocol === 'https:' ? https : http;
+    const proxyReq = client.request(targetUrl, {
+      method: req.method,
+      headers: {
+        ...req.headers,
+        host: targetUrl.host
+      }
+    }, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      proxyRes.pipe(res);
+    });
+
+    proxyReq.on('error', (err) => {
+      console.error('Error forwarding request to legacy service:', err.message);
+      res.writeHead(502, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('502 Bad Gateway: Legacy service unreachable');
+    });
+
+    req.pipe(proxyReq);
+  } catch (err) {
+    console.error('Proxy error:', err);
+    res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('500 Internal Server Error');
+  }
+}
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -38,10 +73,22 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // Alias /legacy to /_legacy/
+  // Handle /legacy routing: internal service binding vs local filesystem
   if (reqPath === '/legacy' || reqPath === '/legacy/') {
-    res.writeHead(302, { Location: '/_legacy/index.html' });
-    res.end();
+    if (process.env.LEGACY_URL) {
+      proxyToLegacy(req, res, '/index.html');
+      return;
+    } else {
+      res.writeHead(302, { Location: '/_legacy/index.html' });
+      res.end();
+      return;
+    }
+  }
+
+  // Handle _legacy paths via internal service binding
+  if (process.env.LEGACY_URL && reqPath.startsWith('/_legacy/')) {
+    const sub = reqPath.replace('/_legacy/', '');
+    proxyToLegacy(req, res, sub || '/index.html');
     return;
   }
 
@@ -94,6 +141,10 @@ const server = http.createServer((req, res) => {
 
   // Fallback: check inside _legacy if not found at root
   if (!fs.existsSync(filePath)) {
+    if (process.env.LEGACY_URL) {
+      proxyToLegacy(req, res, reqPath);
+      return;
+    }
     const legacyCandidate = path.join(ROOT, '_legacy', reqPath);
     if (fs.existsSync(legacyCandidate) && fs.statSync(legacyCandidate).isFile()) {
       filePath = legacyCandidate;
